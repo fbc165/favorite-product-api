@@ -1,10 +1,12 @@
-from typing import Annotated
+from typing import Annotated, Self
 
 from pydantic import (
     AfterValidator,
     BaseModel,
+    ConfigDict,
     EmailStr,
     Field,
+    model_validator,
 )
 
 
@@ -28,3 +30,16 @@ NameStr = Annotated[
 class CreateUserPayload(BaseModel):
     name: NameStr
     email: EmailStr
+
+
+class UpdateUserPayload(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: NameStr | None = None
+    email: EmailStr | None = None
+
+    @model_validator(mode="after")
+    def validate_if_at_least_one_field_exists(self) -> Self:
+        if not self.name and not self.email:
+            raise ValueError("At least one field should be updated")
+        return self
