@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from favorite_product_api.router import api_v1_router
 
 app = FastAPI(
     title="Favorite Product API",
@@ -15,3 +16,5 @@ app = FastAPI(
         },
     ],
 )
+
+app.include_router(api_v1_router, prefix="/api/v1")
