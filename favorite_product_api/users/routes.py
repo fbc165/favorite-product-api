@@ -7,7 +7,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from favorite_product_api.databases.postgresql import get_db
 from favorite_product_api.exceptions import NotFoundError
 from favorite_product_api.users.payloads import CreateUserPayload, UpdateUserPayload
-from favorite_product_api.users.responses import CreateUserResponse, UpdateUserResponse
+from favorite_product_api.users.responses import (
+    CreateUserResponse,
+    GetUserResponse,
+    UpdateUserResponse,
+)
 from favorite_product_api.users.services import UserService
 
 router = APIRouter()
@@ -57,6 +61,28 @@ async def update_user(
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(e)
         )
+    except NotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error",
+        )
+
+
+@router.get("/{uuid}", response_model=GetUserResponse)
+async def get_user(uuid: UUID, db_session: AsyncSession = Depends(get_db)):
+    try:
+        user = await UserService.get_user(uuid=uuid, db_session=db_session)
+
+        return GetUserResponse(email=user.email, name=user.name)
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(e)
+        )
+
     except NotFoundError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
