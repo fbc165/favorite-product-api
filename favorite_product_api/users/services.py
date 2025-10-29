@@ -17,6 +17,17 @@ class UserService:
         return user
 
     @classmethod
+    async def get_user(cls, db_session: AsyncSession, uuid: UUID) -> User:
+        query = select(User).where(User.uuid == uuid)
+        user = await db_session.execute(query)
+        user = user.scalar_one_or_none()
+
+        if user is None:
+            raise NotFoundError("User not found")
+
+        return user
+
+    @classmethod
     async def update_user(
         cls,
         db_session: AsyncSession,
@@ -26,12 +37,7 @@ class UserService:
     ) -> dict:
         updated_data = {}
 
-        query = select(User).where(User.uuid == uuid)
-        user = await db_session.execute(query)
-        user = user.scalar_one_or_none()
-
-        if user is None:
-            raise NotFoundError("User not found")
+        user = await cls.get_user(db_session=db_session, uuid=uuid)
 
         if name is not None:
             user.name = name
@@ -46,17 +52,6 @@ class UserService:
         await db_session.flush()
 
         return updated_data
-
-    @classmethod
-    async def get_user(cls, db_session: AsyncSession, uuid: UUID) -> User:
-        query = select(User).where(User.uuid == uuid)
-        user = await db_session.execute(query)
-        user = user.scalar_one_or_none()
-
-        if user is None:
-            raise NotFoundError("User not found")
-
-        return user
 
     @classmethod
     async def delete_user(cls, db_session: AsyncSession, uuid: UUID) -> bool:
