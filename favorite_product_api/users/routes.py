@@ -50,7 +50,6 @@ async def update_user(
         )
 
         return UpdateUserResponse(
-            uuid=uuid,
             email=updated_data.get("email", None),
             name=updated_data.get("name", None),
         )
