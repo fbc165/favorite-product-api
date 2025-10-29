@@ -46,3 +46,14 @@ class UserService:
         await db_session.flush()
 
         return updated_data
+
+    @classmethod
+    async def get_user(cls, db_session: AsyncSession, uuid: UUID) -> User:
+        query = select(User).where(User.uuid == uuid)
+        user = await db_session.execute(query)
+        user = user.scalar_one_or_none()
+
+        if user is None:
+            raise NotFoundError("User not found")
+
+        return user
