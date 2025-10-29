@@ -12,3 +12,8 @@ class CreateUserResponse(BaseModel):
 class UpdateUserResponse(BaseModel):
     email: str | None = None
     name: str | None = None
+
+
+class GetUserResponse(BaseModel):
+    email: str
+    name: str
