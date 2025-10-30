@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -97,6 +97,8 @@ async def get_user(uuid: UUID, db_session: AsyncSession = Depends(get_db)):
 async def delete_user(uuid: UUID, db_session: AsyncSession = Depends(get_db)):
     try:
         await UserService.delete_user(db_session=db_session, uuid=uuid)
+
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
 
     except ValueError as e:
         raise HTTPException(
