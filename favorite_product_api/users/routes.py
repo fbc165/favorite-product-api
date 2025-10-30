@@ -96,7 +96,7 @@ async def get_user(uuid: UUID, db_session: AsyncSession = Depends(get_db)):
 @router.delete("/{uuid}")
 async def delete_user(uuid: UUID, db_session: AsyncSession = Depends(get_db)):
     try:
-        UserService.delete_user(db_session=db_session, uuid=uuid)
+        await UserService.delete_user(db_session=db_session, uuid=uuid)
 
     except ValueError as e:
         raise HTTPException(
