@@ -16,6 +16,7 @@ class User(Base):
     )
     email = Column(String(254), unique=True, index=True, nullable=False)
     name = Column(String(100), nullable=False)
+    hashed_password = Column(String(60), nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(
         DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
