@@ -2,6 +2,7 @@ import uuid
 
 from sqlalchemy import Column, DateTime, Integer, String, func
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from favorite_product_api.databases.postgresql.base import Base
 
@@ -18,4 +19,10 @@ class User(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(
         DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+    favorite_products = relationship(
+        "UserFavoriteProduct",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy="selectin",
     )
