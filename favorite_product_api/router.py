@@ -9,7 +9,7 @@ from favorite_product_api.users.routes import router as users_router
 
 api_v1_router = APIRouter()
 
-api_v1_router.include_router(users_router, prefix="/users", tags=["Clients"])
+api_v1_router.include_router(users_router, prefix="/users", tags=["Users"])
 api_v1_router.include_router(
     user_favorite_products_router,
     prefix="/users/{user_uuid}/favorite-products",

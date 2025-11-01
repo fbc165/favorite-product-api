@@ -11,7 +11,7 @@ app = FastAPI(
             "description": "Recursos relacionados aos produtos favoritos dos usuário",
         },
         {
-            "name": "Clients",
+            "name": "Users",
             "description": "Recursos relacionados aos clientes",
         },
         {
