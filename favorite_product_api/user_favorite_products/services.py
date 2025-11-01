@@ -42,13 +42,25 @@ class UserFavoriteProductService:
 
         response.raise_for_status()
 
-        data = response.json()
-        product_id = data["id"]
+        product_data = response.json()
+
+        try:
+            product = ProductResponse(
+                id=product_data["id"],
+                title=product_data["title"],
+                image=product_data["image"],
+                price=product_data["price"],
+                description=product_data["description"],
+                category=product_data["category"],
+                rating=product_data["rating"],
+            )
+        except KeyError:
+            raise NotFoundError("Product not found")
 
         user = await UserService.get_user(db_session=db_session, uuid=user_uuid)
 
         user_favorite_product = UserFavoriteProduct(
-            user_id=user.id, product_id=product_id
+            user_id=user.id, product_id=product.id
         )
 
         db_session.add(user_favorite_product)
@@ -58,4 +70,4 @@ class UserFavoriteProductService:
         except IntegrityError:
             raise ProductAlreadyIsFavoriteError()
 
-        return data
+        return product
