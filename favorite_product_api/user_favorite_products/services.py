@@ -75,3 +75,22 @@ class UserFavoriteProductService:
             raise ProductAlreadyIsFavoriteError()
 
         return product
+
+    @classmethod
+    async def remove_favorite_product(
+        cls, db_session: AsyncSession, user_id: int, product_id: int
+    ):
+        query = select(UserFavoriteProduct).where(
+            UserFavoriteProduct.user_id == user_id,
+            UserFavoriteProduct.product_id == product_id,
+        )
+
+        result = await db_session.execute(query)
+        favorite_product = result.scalar_one_or_none()
+
+        if favorite_product is None:
+            raise NotFoundError("Favorite product not found for this user")
+
+        await db_session.delete(favorite_product)
+
+        await db_session.flush()
