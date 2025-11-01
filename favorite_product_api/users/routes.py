@@ -1,13 +1,16 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from favorite_product_api.auth.auth import get_current_user
 from favorite_product_api.databases.postgresql import get_db
-from favorite_product_api.exceptions import NotFoundError
-from favorite_product_api.users.payloads import CreateUserPayload, UpdateUserPayload
+from favorite_product_api.exceptions import EmailAlreadyExistsError, NotFoundError
+from favorite_product_api.users.models import User
+from favorite_product_api.users.payloads import (
+    CreateUserPayload,
+    UpdateUserPayload,
+)
 from favorite_product_api.users.responses import (
     CreateUserResponse,
     GetUserResponse,
@@ -34,10 +37,10 @@ async def create_user(
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(e)
         )
-    except IntegrityError:
+    except EmailAlreadyExistsError as e:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Email already exists",
+            detail=str(e),
         )
     except Exception:
         raise HTTPException(

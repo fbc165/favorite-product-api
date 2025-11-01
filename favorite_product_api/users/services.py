@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from favorite_product_api.auth.security import get_password_hash
@@ -16,8 +17,11 @@ class UserService:
         hashed_password = get_password_hash(password)
         user = User(email=email, name=name, hashed_password=hashed_password)
         db_session.add(user)
-        await db_session.flush()
 
+        try:
+            await db_session.flush()
+        except IntegrityError:
+            raise EmailAlreadyExistsError()
         return user
 
     @classmethod
