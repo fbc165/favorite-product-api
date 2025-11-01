@@ -1,9 +1,10 @@
-import asyncio
-
-import httpx
 from sqlalchemy import UUID, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from favorite_product_api.exceptions import NotFoundError, ProductAlreadyIsFavoriteError
+from favorite_product_api.products.datasources import ProductDataSource
+from favorite_product_api.products.responses import ProductResponse
 from favorite_product_api.user_favorite_products.models import UserFavoriteProduct
 from favorite_product_api.users.services import UserService
 
@@ -11,7 +12,7 @@ from favorite_product_api.users.services import UserService
 class UserFavoriteProductService:
     async def get_user_favorite_products(
         user_uuid: UUID, db_session: AsyncSession
-    ) -> UserFavoriteProduct:
+    ) -> list[ProductResponse]:
 
         user = await UserService.get_user(db_session=db_session, uuid=user_uuid)
 
@@ -21,24 +22,27 @@ class UserFavoriteProductService:
 
         favorite_products = favorite_products.scalars().all()
 
-        async with httpx.AsyncClient() as client:
-            tasks = [
-                client.get(
-                    f"https://fakestoreapi.com/products/{favorite_product.product_id}"
-                )
-                for favorite_product in favorite_products
-            ]
-            products = await asyncio.gather(*tasks)
+        products = await ProductDataSource.get_products_by_ids(
+            ids=[favorite_product.product_id for favorite_product in favorite_products]
+        )
 
-            return [product.json() for product in products]
+        return [
+            ProductResponse(
+                id=product.json()["id"],
+                title=product.json()["title"],
+                image=product.json()["image"],
+                price=product.json()["price"],
+                description=product.json()["description"],
+                category=product.json()["category"],
+                rating=product.json()["rating"],
+            )
+            for product in products
+        ]
 
     async def add_favorite_product_to_user(
         user_uuid: UUID, product_id: int, db_session: AsyncSession
-    ) -> dict:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"https://fakestoreapi.com/products/{product_id}",
-            )
+    ) -> ProductResponse:
+        response = await ProductDataSource.get_product_by_id(id=product_id)
 
         response.raise_for_status()
 
