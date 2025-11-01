@@ -15,7 +15,7 @@ class EmailAlreadyExistsError(Exception):
 
 
 class ProductAlreadyIsFavoriteError(Exception):
-    def __init__(self, detail: str = "Product already in user favorite product list"):
+    def __init__(self, detail: str = "Product is already favorite"):
         self.detail = detail
 
     def __str__(self):
