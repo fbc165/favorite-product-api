@@ -80,9 +80,6 @@ Você pode usar a documentação interativa do Swagger UI para testar todos os e
 
 -   No topo da página do Swagger, clique no botão Authorize.
 -   Na janela que abrir, cole o `access_token` que você recebeu no campo "Value".
-    ```
-    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-    ```
 -   Clique em "Authorize" e depois em "Close". Agora, todas as suas requisições feitas pelo Swagger incluirão o token de autenticação no formato correto.
 
 ### 4. Teste os Endpoints Protegidos
