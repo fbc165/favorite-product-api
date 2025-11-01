@@ -42,10 +42,10 @@ async def add_favorite_product(
         )
 
         return AddUserFavoriteProductResponse(
-            product_id=user_favorite_product["id"],
-            title=user_favorite_product["title"],
-            image=user_favorite_product["image"],
-            price=user_favorite_product["price"],
+            product_id=user_favorite_product.id,
+            title=user_favorite_product.title,
+            image=user_favorite_product.image,
+            price=user_favorite_product.price,
         )
 
     except NotFoundError as e:
@@ -88,10 +88,10 @@ async def get_user_favorite_products(
         return GetUserFavoriteProductsResponse(
             products=[
                 ProductItem(
-                    product_id=favorite_product["id"],
-                    title=favorite_product["title"],
-                    image=favorite_product["image"],
-                    price=favorite_product["price"],
+                    product_id=favorite_product.id,
+                    title=favorite_product.title,
+                    image=favorite_product.image,
+                    price=favorite_product.price,
                 )
                 for favorite_product in favorite_products
             ]
