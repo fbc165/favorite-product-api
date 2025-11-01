@@ -13,6 +13,6 @@ api_v1_router.include_router(users_router, prefix="/users", tags=["Users"])
 api_v1_router.include_router(
     user_favorite_products_router,
     prefix="/users/{user_uuid}/favorite-products",
-    tags=["UserFavoriteProducts"],
+    tags=["Favorite products"],
 )
 api_v1_router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
