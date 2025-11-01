@@ -3,6 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from favorite_product_api.auth.auth import get_current_user
 from favorite_product_api.databases.postgresql import get_db
 from favorite_product_api.exceptions import NotFoundError
 from favorite_product_api.user_favorite_products.payloads import (
@@ -25,7 +26,13 @@ async def add_favorite_product(
     user_uuid: UUID,
     payload: AddFavoriteProductPayload,
     db_session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    if current_user.uuid != user_uuid:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Operation not permitted",
+        )
     try:
         user_favorite_product = (
             await UserFavoriteProductService.add_favorite_product_to_user(
@@ -57,8 +64,15 @@ async def add_favorite_product(
 
 @router.get("/")
 async def get_user_favorite_products(
-    user_uuid: UUID, db_session: AsyncSession = Depends(get_db)
+    user_uuid: UUID,
+    db_session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    if current_user.uuid != user_uuid:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Operation not permitted",
+        )
     try:
         favorite_products = await UserFavoriteProductService.get_user_favorite_products(
             db_session=db_session, user_uuid=user_uuid

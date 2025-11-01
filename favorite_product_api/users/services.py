@@ -3,14 +3,18 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from favorite_product_api.exceptions import NotFoundError
+from favorite_product_api.auth.security import get_password_hash
+from favorite_product_api.exceptions import EmailAlreadyExistsError, NotFoundError
 from favorite_product_api.users.models import User
 
 
 class UserService:
     @classmethod
-    async def create_user(cls, db_session: AsyncSession, name: str, email: str) -> User:
-        user = User(email=email, name=name)
+    async def create_user(
+        cls, db_session: AsyncSession, name: str, email: str, password: str
+    ) -> User:
+        hashed_password = get_password_hash(password)
+        user = User(email=email, name=name, hashed_password=hashed_password)
         db_session.add(user)
         await db_session.flush()
 
@@ -19,6 +23,17 @@ class UserService:
     @classmethod
     async def get_user(cls, db_session: AsyncSession, uuid: UUID) -> User:
         query = select(User).where(User.uuid == uuid)
+        user = await db_session.execute(query)
+        user = user.scalar_one_or_none()
+
+        if user is None:
+            raise NotFoundError("User not found")
+
+        return user
+
+    @classmethod
+    async def get_user_by_email(cls, db_session: AsyncSession, email: str) -> User:
+        query = select(User).where(User.email == email)
         user = await db_session.execute(query)
         user = user.scalar_one_or_none()
 
