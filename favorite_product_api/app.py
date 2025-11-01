@@ -11,8 +11,8 @@ app = FastAPI(
             "description": "Recursos relacionados aos produtos favoritos dos usuário",
         },
         {
-            "name": "Users",
-            "description": "Recursos relacionados aos usuários",
+            "name": "Clients",
+            "description": "Recursos relacionados aos clientes",
         },
         {
             "name": "Authentication",
