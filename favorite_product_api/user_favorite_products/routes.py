@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from favorite_product_api.auth.auth import get_current_user
 from favorite_product_api.databases.postgresql import get_db
-from favorite_product_api.exceptions import NotFoundError
+from favorite_product_api.exceptions import NotFoundError, ProductAlreadyIsFavoriteError
 from favorite_product_api.user_favorite_products.payloads import (
     AddFavoriteProductPayload,
 )
@@ -17,6 +17,7 @@ from favorite_product_api.user_favorite_products.responses import (
 from favorite_product_api.user_favorite_products.services import (
     UserFavoriteProductService,
 )
+from favorite_product_api.users.models import User
 
 router = APIRouter()
 
