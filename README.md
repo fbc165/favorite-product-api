@@ -14,7 +14,7 @@ Antes de começar, certifique-se de que você tem os seguintes softwares instala
 1.  **Clone o Repositório**
 
     ```bash
-    git clone <URL_DO_SEU_REPOSITORIO>
+    git clone https://github.com/fbc165/favorite-product-api.git
     cd favorite-product-api
     ```
 
