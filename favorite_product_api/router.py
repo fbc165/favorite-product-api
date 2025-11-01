@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 
+from favorite_product_api.auth.auth import jwt_bearer
+from favorite_product_api.auth.routes import router as auth_router
 from favorite_product_api.user_favorite_products.routes import (
     router as user_favorite_products_router,
 )
@@ -13,3 +15,4 @@ api_v1_router.include_router(
     prefix="/users/{user_uuid}/favorite-products",
     tags=["UserFavoriteProducts"],
 )
+api_v1_router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
