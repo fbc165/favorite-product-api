@@ -10,4 +10,4 @@ class ProductResponse(BaseModel):
     price: float
     description: str
     category: str
-    rating: dict[str, Union[float, int]]
+    rating: dict[str, Union[float, int]] | None = None

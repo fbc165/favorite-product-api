@@ -34,7 +34,7 @@ class UserFavoriteProductService:
                 price=product.json()["price"],
                 description=product.json()["description"],
                 category=product.json()["category"],
-                rating=product.json()["rating"],
+                rating=product.json().get("rating", None),
             )
             for product in products
         ]

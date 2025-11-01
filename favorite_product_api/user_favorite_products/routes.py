@@ -22,7 +22,9 @@ from favorite_product_api.users.models import User
 router = APIRouter()
 
 
-@router.post("/")
+@router.post(
+    "/", response_model=AddUserFavoriteProductResponse, response_model_exclude_none=True
+)
 async def add_favorite_product(
     user_uuid: UUID,
     payload: AddFavoriteProductPayload,
@@ -46,6 +48,7 @@ async def add_favorite_product(
             title=user_favorite_product.title,
             image=user_favorite_product.image,
             price=user_favorite_product.price,
+            rating=user_favorite_product.rating,
         )
 
     except NotFoundError as e:
@@ -69,7 +72,11 @@ async def add_favorite_product(
         )
 
 
-@router.get("/")
+@router.get(
+    "/",
+    response_model=GetUserFavoriteProductsResponse,
+    response_model_exclude_none=True,
+)
 async def get_user_favorite_products(
     user_uuid: UUID,
     db_session: AsyncSession = Depends(get_db),
@@ -92,6 +99,7 @@ async def get_user_favorite_products(
                     title=favorite_product.title,
                     image=favorite_product.image,
                     price=favorite_product.price,
+                    rating=favorite_product.rating,
                 )
                 for favorite_product in favorite_products
             ]

@@ -1,3 +1,5 @@
+from typing import Union
+
 from pydantic import BaseModel, HttpUrl
 
 
@@ -6,6 +8,7 @@ class ProductItem(BaseModel):
     title: str
     image: HttpUrl
     price: float
+    rating: dict[str, Union[int, float]] | None = None
 
 
 class GetUserFavoriteProductsResponse(BaseModel):
@@ -17,3 +20,4 @@ class AddUserFavoriteProductResponse(BaseModel):
     title: str
     image: HttpUrl
     price: float
+    rating: dict[str, Union[int, float]] | None = None
