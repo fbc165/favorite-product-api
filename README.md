@@ -27,7 +27,7 @@ Antes de começar, certifique-se de que você tem os seguintes softwares instala
     ```env
     SECRET_KEY=05GLXyRorXqfsDBcrsqtAbivb9c2tZmclT4XGqPEX0A=
     ALGORITHM=HS256
-    ACCESS_TOKEN_EXPIRE_MINUTES=30
+    ACCESS_TOKEN_EXPIRE_MINUTES=60
     POSTGRES_USER=aiqfome
     POSTGRES_PASSWORD=iqui1234
     POSTGRES_DB=aiqfome
