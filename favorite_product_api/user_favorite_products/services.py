@@ -46,6 +46,9 @@ class UserFavoriteProductService:
 
         response.raise_for_status()
 
+        if not response.content:
+            raise NotFoundError("Product not found")
+
         product_data = response.json()
 
         try:
