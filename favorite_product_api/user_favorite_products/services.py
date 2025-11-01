@@ -52,6 +52,10 @@ class UserFavoriteProductService:
         )
 
         db_session.add(user_favorite_product)
-        await db_session.flush()
+
+        try:
+            await db_session.flush()
+        except IntegrityError:
+            raise ProductAlreadyIsFavoriteError()
 
         return data

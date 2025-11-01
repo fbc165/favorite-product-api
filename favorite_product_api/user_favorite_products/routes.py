@@ -55,6 +55,12 @@ async def add_favorite_product(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(e)
         )
 
+    except ProductAlreadyIsFavoriteError as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(e),
+        )
+
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
